@@ -1,0 +1,55 @@
+{
+  "languages": [
+    {
+      "id": "en",
+      "name": "English",
+      "materials": [
+        {
+          "id": "en_lesson1",
+          "name": "Lesson 1: The Quick Brown Fox",
+          "path": "en/lesson1.txt"
+        },
+        {
+          "id": "en_lesson2",
+          "name": "Lesson 2: Typing is a Superpower",
+          "path": "en/lesson2.txt"
+        }
+      ]
+    },
+    {
+      "id": "zh",
+      "name": "中文 (Chinese)",
+      "materials": [
+        {
+          "id": "li_weng_dui_yun",
+          "name": "笠翁对韵",
+          "path": "zh/li_weng_dui_yun.txt"
+        }
+      ]
+    },
+    {
+      "id": "nl",
+      "name": "Nederlands (Dutch)",
+      "materials": [
+        {
+          "id": "de_kat_die_niet_wilde_spinnen",
+          "name": "De Kat die niet wilde spinnen",
+          "path": "nl/de_kat_die_niet_wilde_spinnen.txt",
+          "pro": false
+        },
+        {
+          "id": "de_boekenwurm_die_een_jasje_zocht",
+          "name": "De Boekenwurm die een jasje zocht",
+          "path": "nl/de_boekenwurm_die_een_jasje_zocht.txt",
+          "pro": false
+        },
+        {
+          "id": "het_geheim_van_de_klokkenmaker",
+          "name": "Het Geheim van de Klokkenmaker",
+          "path": "nl/het_geheim_van_de_klokkenmaker.txt",
+          "pro": false
+        }
+      ]
+    }
+  ]
+}
