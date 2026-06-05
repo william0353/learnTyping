@@ -189,12 +189,12 @@ const indexData = ref({ languages: [] })
 const sampleText = ref("")
 
 const currentMaterialName = computed(() => {
-  if (!indexData.value.languages) return ""
+  if (!indexData.value.languages) return "Select Material"
   for (const lang of indexData.value.languages) {
     const found = lang.materials.find(m => m.id === userStore.currentMaterialId)
     if (found) return found.name
   }
-  return "Lesson 1"
+  return "Select Material"
 })
 
 const targetChars = computed(() => sampleText.value.split(''))
@@ -274,8 +274,9 @@ const loadLesson = async () => {
 
     // Fallback if not found
     if (!found) {
-      userStore.currentMaterialId = 'en_lesson1'
-      targetPath = 'en/lesson1.txt'
+      userStore.currentMaterialId = null
+      openModal()
+      return
     }
 
     // 3. Fetch file content
@@ -313,7 +314,9 @@ const loadLesson = async () => {
   } finally {
     isLoading.value = false
     nextTick(() => {
-      focusArea()
+      if (!isModalOpen.value) {
+        focusArea()
+      }
     })
   }
 }
