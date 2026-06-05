@@ -1,7 +1,7 @@
 import { openDB } from 'idb'
 
 const DB_NAME = 'learn_typing_db'
-const DB_VERSION = 1
+const DB_VERSION = 2
 
 export async function initDB() {
   return openDB(DB_NAME, DB_VERSION, {
@@ -13,6 +13,11 @@ export async function initDB() {
         const recordStore = db.createObjectStore('typing_records', { keyPath: 'id' })
         recordStore.createIndex('userId', 'userId')
         recordStore.createIndex('timestamp', 'timestamp')
+      }
+      if (!db.objectStoreNames.contains('game_records')) {
+        const gameStore = db.createObjectStore('game_records', { keyPath: 'id', autoIncrement: true })
+        gameStore.createIndex('score', 'score')
+        gameStore.createIndex('timestamp', 'timestamp')
       }
     },
   })
@@ -26,6 +31,16 @@ export async function saveRecord(record) {
 export async function getRecords() {
   const db = await initDB()
   return db.getAllFromIndex('typing_records', 'timestamp')
+}
+
+export async function saveGameRecord(record) {
+  const db = await initDB()
+  return db.add('game_records', record)
+}
+
+export async function getGameRecords() {
+  const db = await initDB()
+  return db.getAllFromIndex('game_records', 'timestamp')
 }
 
 export async function saveUser(user) {

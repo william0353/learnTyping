@@ -18,6 +18,12 @@
         <h2 class="text-2xl font-bold text-slate-700">Games</h2>
       </router-link>
     </div>
+
+    <div class="mt-16">
+      <router-link to="/about" class="text-lg font-bold text-slate-400 hover:text-blue-500 hover:underline transition-colors">
+        About Us
+      </router-link>
+    </div>
   </div>
 </template>
 
