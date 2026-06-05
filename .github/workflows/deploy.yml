@@ -26,10 +26,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     
-    # 🌟 新增：指定下面所有 run 命令默认在 learning_typing 文件夹下执行
+    # 🌟 新增：指定下面所有 run 命令默认在 learn_typing 文件夹下执行
     defaults:
       run:
-        working-directory: ./learning_typing
+        working-directory: ./learn_typing
 
     steps:
       - name: Checkout
@@ -41,7 +41,7 @@ jobs:
           node-version: 24
           cache: 'npm'
           # 🌟 新增：让缓存去对应的文件夹找 package-lock.json
-          cache-dependency-path: ./learning_typing/package-lock.json 
+          cache-dependency-path: ./learn_typing/package-lock.json 
 
       - name: Install dependencies
         run: npm ci
@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # 🌟 修改：打包产物的路径要加上文件夹前缀
-          path: './learning_typing/dist' 
+          path: './learn_typing/dist' 
 
       - name: Deploy to GitHub Pages
         id: deployment
