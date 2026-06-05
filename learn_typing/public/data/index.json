@@ -5,14 +5,22 @@
       "name": "English",
       "materials": [
         {
-          "id": "en_lesson1",
-          "name": "Lesson 1: The Quick Brown Fox",
-          "path": "en/lesson1.txt"
+          "id": "morning_light",
+          "name": "Morning Light",
+          "path": "en/morning_light.txt",
+          "pro": false
         },
         {
-          "id": "en_lesson2",
-          "name": "Lesson 2: Typing is a Superpower",
-          "path": "en/lesson2.txt"
+          "id": "the_forest_path",
+          "name": "The Forest Path",
+          "path": "en/the_forest_path.txt",
+          "pro": false
+        },
+        {
+          "id": "city_of_light",
+          "name": "City of Light",
+          "path": "en/city_of_light.txt",
+          "pro": true
         }
       ]
     },
@@ -23,7 +31,8 @@
         {
           "id": "li_weng_dui_yun",
           "name": "笠翁对韵",
-          "path": "zh/li_weng_dui_yun.txt"
+          "path": "zh/li_weng_dui_yun.txt",
+          "pro": false
         }
       ]
     },

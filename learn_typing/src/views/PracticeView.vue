@@ -254,7 +254,7 @@ const loadLesson = async () => {
   isLoading.value = true
   try {
     // 1. Fetch materials index
-    const indexRes = await fetch('/data/index.json')
+    const indexRes = await fetch(`${import.meta.env.BASE_URL}data/index.json`)
     indexData.value = await indexRes.json()
 
     // 2. Determine target material path
@@ -279,7 +279,7 @@ const loadLesson = async () => {
     }
 
     // 3. Fetch file content
-    const txtRes = await fetch(`/data/${targetPath}`)
+    const txtRes = await fetch(`${import.meta.env.BASE_URL}data/${targetPath}`)
     const text = await txtRes.text()
     
     // Normalize carriage returns, but preserve standard newlines
@@ -334,7 +334,6 @@ onMounted(async () => {
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize)
   if (timer) clearInterval(timer)
-  if (pauseTimeout) clearTimeout(pauseTimeout)
 })
 
 const isPunctuation = (char) => /[.,\/#!$%\^&\*;:{}=\-_`~()]/.test(char)
