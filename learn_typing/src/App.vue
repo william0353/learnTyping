@@ -9,6 +9,7 @@
         <div class="flex gap-4">
           <router-link to="/practice" class="nav-link" active-class="active">Practice</router-link>
           <router-link to="/game" class="nav-link" active-class="active">Game</router-link>
+          <router-link to="/diary" class="nav-link" active-class="active">Diary</router-link>
           <router-link to="/profile" class="nav-link" active-class="active">Profile</router-link>
         </div>
       </nav>

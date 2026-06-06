@@ -1,22 +1,31 @@
 <template>
-  <div class="max-w-4xl mx-auto p-4 sm:p-6 font-sans">
-    <div class="flex flex-col items-center justify-between md:flex-row gap-4 mb-6">
-      <h1 class="text-4xl font-black text-pink-500 flex items-center gap-2 drop-shadow-sm">
+  <div class="max-w-full mx-auto h-full p-4 md:p-6 font-sans w-full px-4 md:px-8">
+    <!-- Title Section -->
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl sm:text-4xl font-black text-pink-500 flex items-center gap-2 drop-shadow-sm">
         <span>🎮</span> Falling Letters
       </h1>
-      <div class="flex gap-4">
-        <div class="bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-2">
-          <span class="text-slate-400 font-bold uppercase tracking-wider text-xs">High Score</span>
-          <span class="text-pink-500 font-black text-lg">{{ topScore }}</span>
-        </div>
-      </div>
     </div>
 
-    <!-- Game Container -->
-    <div 
-      class="relative w-full bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-800 h-[500px] select-none outline-none focus-within:border-pink-500/50 transition-colors"
-      @click="focusInput"
-    >
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch w-full mb-8">
+      
+      <!-- Left Sidebar: Settings -->
+      <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm p-4 w-full flex flex-col gap-4 border border-slate-100 h-full">
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Settings</h3>
+        <label class="flex items-center justify-center gap-2 cursor-pointer bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors">
+          <input type="checkbox" v-model="handPositionMode" class="w-4 h-4 text-pink-500 bg-slate-100 border-slate-300 rounded focus:ring-pink-500 outline-none">
+          <span class="text-slate-600 font-bold text-xs uppercase text-center w-full">Hand Position Mode</span>
+        </label>
+        <SoundSettings class="w-full justify-center bg-slate-50 border-slate-200" />
+      </div>
+
+      <!-- Center: Game Area -->
+      <div class="lg:col-span-8 w-full flex flex-col mb-6 lg:mb-0">
+        <!-- Game Container -->
+        <div 
+          class="relative w-full flex-grow bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-800 h-[500px] md:h-[600px] select-none outline-none focus-within:border-pink-500/50 transition-colors"
+          @click="focusInput"
+        >
       <!-- Hidden Input for keyboard focus -->
       <input 
         ref="gameInput"
@@ -37,18 +46,6 @@
           <div>
             <span class="text-slate-400 text-xs block">TIME</span>
             <span class="text-amber-400 font-black text-xl">{{ timeLeft }}s</span>
-          </div>
-          <div>
-            <span class="text-slate-400 text-xs block">SCORE</span>
-            <span class="text-pink-400 font-black text-xl">{{ score }}</span>
-          </div>
-          <div>
-            <span class="text-slate-400 text-xs block">ACCURACY</span>
-            <span class="text-green-400 font-black text-xl">{{ accuracy }}%</span>
-          </div>
-          <div>
-            <span class="text-slate-400 text-xs block">SPEED</span>
-            <span class="text-blue-400 font-black text-lg">{{ activeSpeed.toFixed(2) }} <span class="text-xs">pts/s</span></span>
           </div>
         </div>
 
@@ -168,6 +165,35 @@
         <span class="text-slate-400 text-xs mt-1">Click here to resume playing</span>
       </div>
     </div>
+      </div> <!-- End Center Area -->
+
+      <!-- Right Sidebar: Stats -->
+      <div class="lg:col-span-2 grid grid-cols-3 lg:flex lg:flex-col gap-3 md:gap-4 w-full font-sans lg:h-full">
+        <!-- Score -->
+        <div class="bg-white rounded-2xl shadow-sm p-3 md:p-4 flex flex-col items-center justify-center border-b-2 border-blue-400 w-full lg:flex-1">
+          <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px] md:text-xs mb-1">Score</span>
+          <div class="text-lg sm:text-xl md:text-2xl font-black text-slate-700">
+            <span class="text-blue-500">{{ score }}</span>
+          </div>
+        </div>
+
+        <!-- Accuracy -->
+        <div class="bg-white rounded-2xl shadow-sm p-3 md:p-4 flex flex-col items-center justify-center border-b-2 border-green-400 w-full lg:flex-1">
+          <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px] md:text-xs mb-1">Accuracy</span>
+          <div class="text-lg sm:text-xl md:text-2xl font-black text-slate-700">
+            <span class="text-green-500">{{ accuracy }}%</span>
+          </div>
+        </div>
+
+        <!-- Speed -->
+        <div class="bg-white rounded-2xl shadow-sm p-3 md:p-4 flex flex-col items-center justify-center border-b-2 border-purple-400 w-full lg:flex-1">
+          <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px] md:text-xs mb-1">Speed</span>
+          <div class="text-lg sm:text-xl md:text-2xl font-black text-slate-700">
+            <span class="text-purple-500">{{ activeSpeed.toFixed(1) }}</span> <span class="text-[10px] md:text-xs text-slate-400">pts/s</span>
+          </div>
+        </div>
+      </div>
+    </div> <!-- End Main Grid -->
 
     <!-- Leaderboard / History Section -->
     <div class="mt-8 space-y-6">
@@ -278,7 +304,11 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import SoundSettings from '@/components/SoundSettings.vue'
+import { useSettingsStore } from '@/stores/settings'
 import { saveGameRecord, getGameRecords } from '@/db/index'
+
+const globalSettings = useSettingsStore()
 
 // Game Configuration
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -289,6 +319,7 @@ const PALETTE = ['#f43f5e', '#ec4899', '#d946ef', '#a855f7', '#8b5cf6', '#6366f1
 
 // Game States
 const gameState = ref('idle') // idle, playing, gameover
+const handPositionMode = ref(true) // Toggle for Hand Position Mode
 const gameInput = ref(null)
 const isFocused = ref(false)
 
@@ -364,10 +395,26 @@ const spawnLetter = () => {
   const size = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE
   const color = PALETTE[Math.floor(Math.random() * PALETTE.length)]
 
+  let x = Math.random() * 90 + 5 // default: random within 5% - 95% width
+  
+  if (handPositionMode.value) {
+    const leftArr = ['Q','W','E','R','A','S','D','F','Z','X','C','V']
+    const midArr = ['T','Y','G','H','B']
+    const rightArr = ['U','I','O','P','J','K','L','N','M']
+    
+    if (leftArr.includes(char)) {
+      x = Math.random() * 30 + 5 // 5% - 35%
+    } else if (rightArr.includes(char)) {
+      x = Math.random() * 30 + 65 // 65% - 95%
+    } else if (midArr.includes(char)) {
+      x = Math.random() * 30 + 35 // 35% - 65%
+    }
+  }
+
   fallingLetters.value.push({
     id: Date.now() + Math.random(),
     char,
-    x: Math.random() * 90 + 5, // Keep within 5% - 95% width
+    x,
     y: 0,
     speed: baseSpeed,
     size,
@@ -375,8 +422,8 @@ const spawnLetter = () => {
   })
 
   // Dynamic spawn rate decreases smoothly using an exponential decay curve
-  // Approaches 400ms asymptotically. 0 hits = 1200ms, 40 hits ≈ 556ms, 80 hits ≈ 430ms.
-  const currentInterval = Math.max(400, 400 + 800 * Math.pow(0.96, hits.value))
+  // Approaches 400ms asymptotically. 0 hits = 1200ms, 40 hits ≈ 837ms, 80 hits ≈ 638ms.
+  const currentInterval = Math.max(400, 400 + 800 * Math.pow(0.985, hits.value))
   clearTimeout(spawnTimer)
   spawnTimer = setTimeout(spawnLetter, currentInterval)
 }
@@ -387,6 +434,8 @@ const handleKeyDown = (e) => {
 
   // Only count printable single character keypresses
   if (e.key.length !== 1) return
+
+  globalSettings.playSound()
 
   totalKeyPresses.value++
 

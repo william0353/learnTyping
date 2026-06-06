@@ -51,6 +51,7 @@
               Ignore Case
             </label>
           </div>
+          <SoundSettings class="mt-3 w-full justify-center" />
         </div>
 
         <!-- Footer indicator to fill space beautifully -->
@@ -193,9 +194,12 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useTypingStore } from '@/stores/typing'
 import { useUserStore } from '@/stores/user'
+import SoundSettings from '@/components/SoundSettings.vue'
+import { useSettingsStore } from '@/stores/settings'
 
 const typingStore = useTypingStore()
 const userStore = useUserStore()
+const globalSettings = useSettingsStore()
 const typingArea = ref(null)
 const hiddenInput = ref(null)
 const scrollContainer = ref(null)
@@ -415,6 +419,7 @@ const handleKeydown = (e) => {
 
   if (e.key === 'Backspace') {
     e.preventDefault()
+    globalSettings.playSound()
     startSession()
 
     if (currentIndex.value > 0) {
@@ -439,6 +444,9 @@ const handleInput = (e) => {
   if (isLoading.value) return
   
   const chars = inputValue.value.split('')
+  if (chars.length > 0) {
+    globalSettings.playSound()
+  }
   inputValue.value = '' // clear immediately
   
   for (const inputChar of chars) {
