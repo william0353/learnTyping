@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { v4 as uuidv4 } from 'uuid'
 import { saveRecord, getRecords } from '../db'
 
 export const useTypingStore = defineStore('typing', {
@@ -14,7 +15,7 @@ export const useTypingStore = defineStore('typing', {
     
     startSession(articleId) {
       this.activeRecord = {
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         articleId,
         userId: 'default-user',
         startTime: Date.now(),
