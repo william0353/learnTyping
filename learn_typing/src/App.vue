@@ -1,10 +1,10 @@
 <template>
   <div class="min-h-screen flex flex-col bg-slate-50 font-sans">
     <header class="bg-white shadow-sm border-b-4 border-blue-400">
-      <nav class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+      <nav class="max-w-full mx-auto px-6 md:px-12 py-4 flex justify-between items-center">
         <router-link to="/" class="flex items-center gap-2 group">
           <span class="text-3xl">⌨️</span>
-          <span class="text-2xl font-black text-blue-500 tracking-wide group-hover:text-blue-600 transition-colors">LearnTyping</span>
+          <span class="text-2xl font-black text-blue-500 tracking-wide group-hover:text-blue-600 transition-colors">Lululala</span>
         </router-link>
         <div class="flex gap-4">
           <router-link to="/practice" class="nav-link" active-class="active">Practice</router-link>
@@ -14,7 +14,7 @@
       </nav>
     </header>
 
-    <main class="flex-grow max-w-5xl mx-auto w-full p-6">
+    <main class="flex-grow w-full p-6">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :is="Component" />

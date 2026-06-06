@@ -1,119 +1,147 @@
 <template>
-  <div class="flex flex-col items-center max-w-7xl mx-auto h-full p-4 font-mono w-full">
-    
-    <!-- Control Panel -->
-    <div class="bg-white rounded-2xl shadow-sm p-4 w-full flex flex-col md:flex-row items-center justify-between gap-4 mb-6 border border-slate-100 font-sans">
+  <div class="max-w-full mx-auto h-full p-4 md:p-6 font-mono w-full px-4 md:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch w-full">
       
-      <!-- Material Selector -->
-      <button 
-        @click="openModal" 
-        class="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-xl font-bold transition-colors cursor-pointer w-full md:w-auto justify-center"
-      >
-        <span class="text-xl">📚</span>
-        <span class="truncate max-w-[200px]">{{ currentMaterialName }}</span>
-        <span class="text-blue-400 ml-1 text-xs">▼</span>
-      </button>
+      <!-- Left Sidebar: Material & Settings -->
+      <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm p-4 w-full flex flex-col md:flex-row lg:flex-col gap-4 border border-slate-100 font-sans md:items-center lg:items-stretch justify-between lg:justify-start lg:h-full">
+        
+        <!-- Material Selector -->
+        <div class="w-full md:w-auto lg:w-full">
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Material</h3>
+          <button 
+            @click="openModal" 
+            class="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-xl font-bold transition-colors cursor-pointer w-full justify-between text-sm"
+          >
+            <span class="truncate max-w-[120px] lg:max-w-none">{{ currentMaterialName }}</span>
+            <span class="text-blue-400 text-xs">▼</span>
+          </button>
+        </div>
 
-      <!-- Settings Toggles -->
-      <div class="flex flex-wrap justify-center md:justify-end gap-4 md:gap-6">
-        <label class="flex items-center gap-2 cursor-pointer text-slate-600 hover:text-blue-500 font-bold text-sm">
-          <input type="checkbox" v-model="settings.skipSpaces" class="w-4 h-4 accent-blue-500 rounded" />
-          Skip Spaces
-        </label>
-        <label class="flex items-center gap-2 cursor-pointer text-slate-600 hover:text-blue-500 font-bold text-sm">
-          <input type="checkbox" v-model="settings.skipPunctuation" class="w-4 h-4 accent-blue-500 rounded" />
-          Skip Punctuation
-        </label>
-        <label class="flex items-center gap-2 cursor-pointer text-slate-600 hover:text-blue-500 font-bold text-sm">
-          <input type="checkbox" v-model="settings.ignoreCase" class="w-4 h-4 accent-blue-500 rounded" />
-          Ignore Case
-        </label>
-      </div>
-    </div>
+        <hr class="hidden lg:block border-slate-100 w-full" />
 
-    <!-- Typing Area -->
-    <div 
-      class="w-full bg-white rounded-3xl shadow-lg p-6 md:p-8 mb-6 relative border-4 border-transparent outline-none focus-within:border-blue-300 transition-colors cursor-text overflow-hidden"
-      @click="focusArea"
-    >
-      <input 
-        ref="hiddenInput"
-        type="text"
-        v-model="inputValue"
-        @input="handleInput"
-        @keydown="handleKeydown"
-        @focus="isFocused = true"
-        @blur="isFocused = false"
-        class="opacity-0 absolute top-0 left-0 w-[1px] h-[1px] -z-10"
-        autocomplete="off"
-        spellcheck="false"
-      />
-      <!-- Loading indicator -->
-      <div v-if="isLoading" class="absolute inset-0 bg-white/95 rounded-3xl flex items-center justify-center z-10 font-sans text-lg text-slate-500">
-        <div class="animate-spin mr-3">🌀</div> Loading lesson...
-      </div>
-      
-
-
-      <!-- Text Lines (Continuous Flow Layout) -->
-      <div 
-        v-if="!isLoading" 
-        class="text-lg sm:text-xl md:text-2xl lg:text-3xl select-none overflow-y-auto h-[18rem] md:h-[22rem] relative scroll-smooth p-2"
-        ref="scrollContainer"
-      >
-        <div class="flex flex-wrap justify-start gap-x-[1px] sm:gap-x-1 gap-y-4 md:gap-y-6 pb-[12rem] pt-4">
-          <template v-for="(char, idx) in targetChars" :key="idx">
-            
-            <!-- Explicit Line Break for \n -->
-            <div v-if="char === '\n' || char === '\r'" class="w-full h-0"></div>
-
-            <!-- Normal Character Cell -->
-            <div 
-              v-else
-              :id="'char-' + idx"
-              class="flex flex-col items-center justify-between relative min-w-[1.2ch] w-auto px-[1px] flex-shrink-0"
+        <!-- Settings Toggles -->
+        <div class="w-full md:w-auto lg:w-full">
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Settings</h3>
+          <div class="flex flex-col md:flex-row lg:flex-col gap-2 md:gap-4 lg:gap-2">
+            <label 
+              :class="[
+                settings.skipSpaces ? 'bg-blue-500 text-white border-blue-500 shadow-sm' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 hover:text-slate-800',
+                'flex items-center justify-center px-3 py-1.5 rounded-lg border font-bold text-xs cursor-pointer select-none transition-all w-full text-center'
+              ]"
             >
-              <!-- Top Row: Source Character -->
-              <span :class="getSourceCharClass(idx)">
-                {{ getSourceCharDisplay(char, idx) }}
-              </span>
+              <input type="checkbox" v-model="settings.skipSpaces" class="hidden" />
+              Skip Spaces
+            </label>
+            <label 
+              :class="[
+                settings.skipPunctuation ? 'bg-blue-500 text-white border-blue-500 shadow-sm' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 hover:text-slate-800',
+                'flex items-center justify-center px-3 py-1.5 rounded-lg border font-bold text-xs cursor-pointer select-none transition-all w-full text-center'
+              ]"
+            >
+              <input type="checkbox" v-model="settings.skipPunctuation" class="hidden" />
+              Skip Punctuation
+            </label>
+            <label 
+              :class="[
+                settings.ignoreCase ? 'bg-blue-500 text-white border-blue-500 shadow-sm' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 hover:text-slate-800',
+                'flex items-center justify-center px-3 py-1.5 rounded-lg border font-bold text-xs cursor-pointer select-none transition-all w-full text-center'
+              ]"
+            >
+              <input type="checkbox" v-model="settings.ignoreCase" class="hidden" />
+              Ignore Case
+            </label>
+          </div>
+        </div>
 
-              <!-- Bottom Row: User Input Character -->
-              <span :class="getUserCharClass(idx)" class="h-[1.2em] flex items-center justify-center">
-                {{ getUserTypedChar(idx) }}
-              </span>
+        <!-- Footer indicator to fill space beautifully -->
+        <div class="hidden lg:block mt-auto pt-6 text-center w-full">
+          <span class="text-[10px] text-slate-300 font-bold tracking-wider uppercase">Practice Mode</span>
+        </div>
+      </div>
 
-              <!-- Cursor Underline / Highlight -->
-              <span 
-                v-if="idx === currentIndex && isFocused" 
-                class="absolute left-0 bottom-[-4px] w-full h-[4px] bg-blue-500 animate-pulse rounded-full"
-              ></span>
-            </div>
-          </template>
+      <!-- Typing Area -->
+      <div 
+        class="lg:col-span-8 w-full bg-white rounded-3xl shadow-lg p-6 md:p-8 mb-6 lg:mb-0 relative border-4 border-transparent outline-none focus-within:border-blue-300 transition-colors cursor-text overflow-hidden"
+        @click="focusArea"
+      >
+        <input 
+          ref="hiddenInput"
+          type="text"
+          v-model="inputValue"
+          @input="handleInput"
+          @keydown="handleKeydown"
+          @focus="isFocused = true"
+          @blur="isFocused = false"
+          class="opacity-0 absolute top-0 left-0 w-[1px] h-[1px] -z-10"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <!-- Loading indicator -->
+        <div v-if="isLoading" class="absolute inset-0 bg-white/95 rounded-3xl flex items-center justify-center z-10 font-sans text-lg text-slate-500">
+          <div class="animate-spin mr-3">🌀</div> Loading lesson...
         </div>
-      </div>
-    </div>
+        
+        <!-- Text Lines (Continuous Flow Layout) -->
+        <div 
+          v-if="!isLoading" 
+          class="text-lg sm:text-xl md:text-2xl lg:text-3xl select-none overflow-y-auto h-[18rem] md:h-[22rem] relative scroll-smooth p-2"
+          ref="scrollContainer"
+        >
+          <div class="flex flex-wrap justify-start gap-x-[1px] sm:gap-x-1 gap-y-4 md:gap-y-6 pb-[12rem] pt-4">
+            <template v-for="(char, idx) in targetChars" :key="idx">
+              
+              <!-- Explicit Line Break for \n -->
+              <div v-if="char === '\n' || char === '\r'" class="w-full h-0"></div>
 
-    <!-- Stats Footer -->
-    <div class="grid grid-cols-3 gap-4 md:gap-6 w-full font-sans">
-      <div class="bg-white rounded-2xl shadow-sm p-4 md:p-6 flex flex-col items-center justify-center border-b-4 border-blue-400">
-        <span class="text-slate-400 font-bold uppercase tracking-wider text-xs md:text-sm mb-1">Speed</span>
-        <div class="text-xl sm:text-2xl md:text-4xl font-black text-slate-700">
-          <span class="text-blue-500">{{ stats.wpm }}</span> <span class="text-xs md:text-lg">WPM</span>
+              <!-- Normal Character Cell -->
+              <div 
+                v-else
+                :id="'char-' + idx"
+                class="flex flex-col items-center justify-between relative min-w-[1.2ch] w-auto px-[1px] flex-shrink-0"
+              >
+                <!-- Top Row: Source Character -->
+                <span :class="getSourceCharClass(idx)">
+                  {{ getSourceCharDisplay(char, idx) }}
+                </span>
+
+                <!-- Bottom Row: User Input Character -->
+                <span :class="getUserCharClass(idx)" class="h-[1.2em] flex items-center justify-center">
+                  {{ getUserTypedChar(idx) }}
+                </span>
+
+                <!-- Cursor Underline / Highlight -->
+                <span 
+                  v-if="idx === currentIndex && isFocused" 
+                  class="absolute left-0 bottom-[-4px] w-full h-[4px] bg-blue-500 animate-pulse rounded-full"
+                ></span>
+              </div>
+            </template>
+          </div>
         </div>
       </div>
-      <div class="bg-white rounded-2xl shadow-sm p-4 md:p-6 flex flex-col items-center justify-center border-b-4 border-pink-400">
-        <span class="text-slate-400 font-bold uppercase tracking-wider text-xs md:text-sm mb-1">Errors</span>
-        <div class="text-xl sm:text-2xl md:text-4xl font-black text-slate-700">
-          <span class="text-pink-500">{{ stats.errors }}</span>
+
+      <!-- Right Sidebar: Stats -->
+      <div class="lg:col-span-2 grid grid-cols-3 lg:flex lg:flex-col gap-3 md:gap-4 w-full font-sans lg:h-full">
+        <div class="bg-white rounded-2xl shadow-sm p-3 md:p-4 flex flex-col items-center justify-center border-b-2 border-blue-400 w-full lg:flex-1">
+          <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px] md:text-xs mb-1">Speed</span>
+          <div class="text-lg sm:text-xl md:text-2xl font-black text-slate-700">
+            <span class="text-blue-500">{{ stats.wpm }}</span> <span class="text-[10px] md:text-xs text-slate-400">WPM</span>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm p-3 md:p-4 flex flex-col items-center justify-center border-b-2 border-pink-400 w-full lg:flex-1">
+          <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px] md:text-xs mb-1">Errors</span>
+          <div class="text-lg sm:text-xl md:text-2xl font-black text-slate-700">
+            <span class="text-pink-500">{{ stats.errors }}</span>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm p-3 md:p-4 flex flex-col items-center justify-center border-b-2 border-green-400 w-full lg:flex-1">
+          <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px] md:text-xs mb-1">Accuracy</span>
+          <div class="text-lg sm:text-xl md:text-2xl font-black text-slate-700">
+            <span class="text-green-500">{{ accuracy }}%</span>
+          </div>
         </div>
       </div>
-      <div class="bg-white rounded-2xl shadow-sm p-4 md:p-6 flex flex-col items-center justify-center border-b-4 border-green-400">
-        <span class="text-slate-400 font-bold uppercase tracking-wider text-xs md:text-sm mb-1">Accuracy</span>
-        <div class="text-xl sm:text-2xl md:text-4xl font-black text-slate-700">
-          <span class="text-green-500">{{ accuracy }}%</span>
-        </div>
-      </div>
+
     </div>
 
     <!-- Material Picker Modal -->
